@@ -1,12 +1,14 @@
 import os
 
-from gpt_localhost import chat_complete
-import tools
+from subroutines import mainloop
 
+
+# TODO: whitelist this or something
 if os.environ['USER'] != 'somebodyelse':
-    # TODO: whitelist or something
-    raise RuntimeError('must run as somebodyelse')
+    # always fail here unrecoverably
+    diediediediediediediediediedie
+    
 
-while True:
-    reload(tools)
-    tools = filter(lambda x: not x.startswith('_'), dir(tools))
+
+mainloop.run_once_complete()
+    
