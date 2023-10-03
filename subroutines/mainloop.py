@@ -36,5 +36,12 @@ def run_once_complete():
         assistant = gpt.complete(text)
         print(assistant)
         messages.append({'role':'assistant','content':assistant})
-        if assistant.lower().strip().startswith('DONE'):
+        assistant_strip = assistant.strip()
+        first_word = assistant_strip.partition(' ')[0].lower()
+        if first_word.startswith('done'):
             done = True
+            break
+        if first_word.startswith('action'):
+            fullfillac
+        
+        

@@ -1,0 +1,10 @@
+Fulfill the goal by calling a function or by adding a new function.
+
+Available functions:
+{functions}
+
+Desired action:
+{goal}
+
+Respond with the function name to call to fulfill this, or the word NEW if a new function is needed.
+Response:
