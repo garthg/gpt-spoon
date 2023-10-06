@@ -2,17 +2,14 @@ import sys
 
 import openai
 
-openai.api_base = "http://localhost:4891/v1"
-openai.api_key = "not needed for a local LLM"
 
-model = "gpt4all-j-v1.3-groovy"
 
 temperature = 0.7
 top_p=0.4
-max_tokens=4096
+max_tokens=1024
 
 
-def complete(prompt):
+def complete_oldstyle(prompt):
     response = openai.Completion.create(
         model=model,
         prompt=prompt,
@@ -27,6 +24,7 @@ def complete(prompt):
 
 
 def chat_complete(messages):
+    model = "gpt-3.5-turbo"
     response = openai.ChatCompletion.create(
         model=model,
         messages=messages,
@@ -37,13 +35,25 @@ def chat_complete(messages):
     return response['choices'][0]['message']['content']
 
 
+def complete(prompt):
+    model = "gpt-3.5-turbo"
+    response = openai.ChatCompletion.create(
+        model=model,
+        messages=[{'role':'user', 'content':prompt}],
+        temperature=temperature,
+        top_p=top_p,
+        max_tokens=max_tokens
+    )
+    return response['choices'][0]['message']['content']
+
 
 if __name__ == '__main__':
     prompt = sys.argv[1]
-    response = complete(prompt)
+    #response = complete(prompt)
     #messages = [
     #    {'role':'system','content':'Answer this'},
     #    {'role':'user', 'content':prompt}
     #]
     #response = chat_complete(messages)
+    response = complete(prompt)
     print(response)
