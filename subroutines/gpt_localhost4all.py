@@ -7,12 +7,11 @@ openai.api_key = "not needed for a local LLM"
 
 model = "gpt4all-j-v1.3-groovy"
 
-temperature = 0.7
 top_p=0.4
 max_tokens=4096
 
 
-def complete(prompt):
+def complete(prompt, temperature=1.0):
     response = openai.Completion.create(
         model=model,
         prompt=prompt,
@@ -26,7 +25,7 @@ def complete(prompt):
     return response['choices'][0]['text']
 
 
-def chat_complete(messages):
+def chat_complete(messages, temperature=1.0):
     response = openai.ChatCompletion.create(
         model=model,
         messages=messages,

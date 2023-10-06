@@ -5,12 +5,12 @@ import openai
 
 
 
-temperature = 0.7
 top_p=0.4
 max_tokens=1024
+sleep_secs = 30
 
 
-def complete_oldstyle(prompt):
+def complete_oldstyle(prompt, temperature=1.0):
     response = openai.Completion.create(
         model=model,
         prompt=prompt,
@@ -24,7 +24,7 @@ def complete_oldstyle(prompt):
     return response['choices'][0]['text']
 
 
-def chat_complete(messages):
+def chat_complete(messages, temperature=1.0):
     model = "gpt-3.5-turbo"
     response = openai.ChatCompletion.create(
         model=model,
@@ -36,7 +36,7 @@ def chat_complete(messages):
     return response['choices'][0]['message']['content']
 
 
-def complete(prompt):
+def complete(prompt, temperature=1.0):
     model = "gpt-3.5-turbo"
     response = openai.ChatCompletion.create(
         model=model,
@@ -45,7 +45,7 @@ def complete(prompt):
         top_p=top_p,
         max_tokens=max_tokens
     )
-    time.sleep(10)
+    time.sleep(sleep_secs)
     return response['choices'][0]['message']['content']
 
 

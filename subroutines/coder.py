@@ -14,7 +14,8 @@ Bulleted list of the simplest set of Python function signatures required to impl
 func_p = """You are a Python programmer. Program requirements:
 {requirements}
 
-{other_functions}Function to implement:
+{other_functions}
+Function to implement:
 {function}
 
 Python implementation of this, with no other text:"""
@@ -38,7 +39,7 @@ here = os.path.dirname(__file__)
 
 
 def architect(requirements):
-    resp = gpt.complete(arch_p.format(requirements=requirements))
+    resp = gpt.complete(arch_p.format(requirements=requirements), temperature=0.7)
     lines = resp.split('\n')
     out = []
     for l in lines:
@@ -49,7 +50,7 @@ def architect(requirements):
 
 
 def filename(requirements):
-    resp = gpt.complete(filename_p.format(requirements=requirements))
+    resp = gpt.complete(filename_p.format(requirements=requirements), temperature=0.1)
     resp = resp.strip().replace(' ', '_')
     if not resp.endswith('.py'):
         resp = resp.rstrip('.') + '.py'
@@ -59,13 +60,15 @@ def filename(requirements):
 def implement_single_function(requirements, target_function, other_functions):
     if other_functions:
         other_list = '\n'.join(other_functions)
-        other_block = 'These other functions are available:\n'+other_list
+        other_block = 'These other functions are available:\n'+other_list+'\n'
     else:
         other_block = ''
     prompt = func_p.format(requirements=requirements, function=target_function, other_functions=other_block)
     print(prompt)
-    out = gpt.complete(prompt)
-    return out
+    out = gpt.complete(prompt, temperature=0.2)
+    lines = out.split('\n')
+    lines = list(filter(lambda x: x.strip() and not x.startswith('```'), lines))
+    return '\n'.join(lines)+'\n'
 
 
 def describe_function(requirements, target_function):
@@ -94,6 +97,7 @@ def implement(requirements):
         for l in requirements.split('\n'):
             fid.write('# '+l)
         fid.write('\n\n')
+        fid.flush()
         for i in range(len(funcs)):
             others = funcs[:i]+funcs[i+1:]
             f = funcs[i]
@@ -103,7 +107,8 @@ def implement(requirements):
             fid.write(comment + '\n')
             fid.write(impl)
             fid.write('\n\n')
-    print(f'implemented with {chars} characters in {filename}')
+            fid.flush()
+    print(f'implemented with {chars} characters in {name}')
 
 
 if __name__ == '__main__':
