@@ -1,4 +1,5 @@
 import sys
+import time
 
 import openai
 
@@ -44,6 +45,7 @@ def complete(prompt):
         top_p=top_p,
         max_tokens=max_tokens
     )
+    time.sleep(10)
     return response['choices'][0]['message']['content']
 
 
