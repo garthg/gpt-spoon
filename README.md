@@ -9,3 +9,7 @@ This is the setup as of Oct 2 2023.
 2. Run the GPT4All GUI and install a model of your choosing (I used Hermes)
 3. Go to the settings in the GUI and enable the localhost option
 4. Then run like in gpt_localhost4all.py
+
+# Run
+
+First become `somebodyelse`. Then run `OPENAI_API_KEY=yourkey python3 main.py`.

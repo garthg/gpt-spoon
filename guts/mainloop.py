@@ -1,5 +1,6 @@
 #from guts import gpt_localhost4all as gpt
 from guts import gpt_openai as gpt
+from guts import goalseek
 
 main_loop_prompt = open('guts/main_loop_prompt.txt').read()
 
@@ -12,14 +13,18 @@ def run_once_chat():
     while not done:
         print('>__> ', end='')
         user = input()
+        if user.strip().lower() in ('quit', 'exit', 'die', 'stop'):
+            break
         messages.append({'role':'user','content':user})
         print('------------')
         print(messages)
         assistant = gpt.chat_complete(messages)
         print(assistant)
         messages.append({'role':'assistant','content':assistant})
-        if assistant.lower().strip().startswith('DONE'):
-            done = True
+        if assistant.strip().lower().startswith('goalseek'):
+            success, output = goalseek.goalseek(assistant[8:])
+            messages.append({'role':'system', 'content': f'Goalseek result: {success}\nOputput: {output}'})
+
 
 
 def run_once_complete():   
@@ -47,5 +52,6 @@ def run_once_complete():
 
 def run_once():
     # choose which one here
-    run_once_complete()       
+    #run_once_complete()       
+    run_once_chat()
         
