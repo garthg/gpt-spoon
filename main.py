@@ -1,6 +1,6 @@
 import os
 
-from subroutines import mainloop
+from guts import mainloop
 
 
 # TODO: whitelist this or something
@@ -10,5 +10,5 @@ if os.environ['USER'] != 'somebodyelse':
     
 
 
-mainloop.run_once_complete()
+mainloop.run_once()
     

@@ -1,9 +1,4 @@
 You are interacting with a user and must fulfill their request by taking actions. Respond by starting with one of the following words:
 - `ASK` question: ask for clarification
 - `ACTION` action: take an action that you describe
-- `QUIT`: done
-
-Messages:
-{messages}
-
-Response:
+- `DONE`: done

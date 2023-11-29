@@ -1,6 +1,7 @@
-from subroutines import gpt_localhost4all as gpt
+#from guts import gpt_localhost4all as gpt
+from guts import gpt_openai as gpt
 
-main_loop_prompt = open('main_loop_prompt.txt').read()
+main_loop_prompt = open('guts/main_loop_prompt.txt').read()
 
 
 def run_once_chat():   
@@ -9,7 +10,7 @@ def run_once_chat():
     done = False
     messages = [{'role':'system','content':main_loop_prompt}]
     while not done:
-        print('@__ ', end='')
+        print('>__> ', end='')
         user = input()
         messages.append({'role':'user','content':user})
         print('------------')
@@ -27,7 +28,7 @@ def run_once_complete():
     done = False
     messages = []
     while not done:
-        print('@__ ', end='')
+        print('>__> ', end='')
         user = input()
         messages.append({'role':'user','content':user})
         print('------------')
@@ -43,5 +44,8 @@ def run_once_complete():
             break
         if first_word.startswith('action'):
             fullfillac
-        
+
+def run_once():
+    # choose which one here
+    run_once_complete()       
         

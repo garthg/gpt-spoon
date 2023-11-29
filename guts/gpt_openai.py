@@ -51,11 +51,13 @@ def complete(prompt, temperature=1.0):
 
 if __name__ == '__main__':
     prompt = sys.argv[1]
+    
     #response = complete(prompt)
-    #messages = [
-    #    {'role':'system','content':'Answer this'},
-    #    {'role':'user', 'content':prompt}
-    #]
-    #response = chat_complete(messages)
-    response = complete(prompt)
+    
+    messages = [
+        {'role':'system','content':'Respond briefly to this:'},
+        {'role':'user', 'content':prompt}
+    ]
+    response = chat_complete(messages)
+    
     print(response)
