@@ -36,6 +36,14 @@ def chat_complete(messages, temperature=1.0):
     return response['choices'][0]['message']['content']
 
 
+def chat_complete_one(user_message, temperature=1.0, system_message=''):
+    messages = []
+    if system_message:
+        messages.append({'role':'system', 'content':system_message})
+    messages.append({'role':'user', 'content':user_message})
+    return chat_complete(messages, temperature)
+
+
 def complete(prompt, temperature=1.0):
     model = "gpt-3.5-turbo"
     response = openai.ChatCompletion.create(
@@ -54,10 +62,6 @@ if __name__ == '__main__':
     
     #response = complete(prompt)
     
-    messages = [
-        {'role':'system','content':'Respond briefly to this:'},
-        {'role':'user', 'content':prompt}
-    ]
-    response = chat_complete(messages)
+    response = chat_complete_one(prompt, system_message='Respond briefly to this')
     
     print(response)
