@@ -10,20 +10,6 @@ max_tokens=1024
 sleep_secs = 30
 
 
-def complete_oldstyle(prompt, temperature=1.0):
-    response = openai.Completion.create(
-        model=model,
-        prompt=prompt,
-        max_tokens=max_tokens,
-        temperature=temperature,
-        top_p=top_p,
-        n=1,
-        echo=False,
-        stream=False
-    )
-    return response['choices'][0]['text']
-
-
 def chat_complete(messages, temperature=1.0):
     model = "gpt-3.5-turbo"
     response = openai.ChatCompletion.create(

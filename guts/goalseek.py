@@ -21,6 +21,7 @@ blacklisted_files = set([
     'mainloop.py',
     'gpt_openai.py',
     'list_all_funcs.py',
+    'coder3.py',
 ])
 
 
@@ -41,6 +42,8 @@ def goalseek(goal):
         assistant = gpt.chat_complete(messages)
         print(assistant)
         messages.append({'role':'assistant','content':assistant})
+        if assistant.lower().strip().startswith('action'):
+            
         break # DEBUGGING
     return True, ''
 
