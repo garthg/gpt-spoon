@@ -8,6 +8,9 @@ from guts import gpt_openai as gpt
 from guts import list_all_funcs
 
 
+temperature = 0.2
+
+
 system_prompt = """Goal: {goal}
 
 Choose actions to best accomplish that goal.
@@ -28,8 +31,17 @@ action_prompt = """Produce a Json object that describes the arguments to <<<acti
 ```
 Reply with the Json and no other text."""
 
-action_prompt2 = """Produce Python code executing the function <<<action>>> to accomplish the goal stated above. Reply with the code and no other text."""
-
+action_prompt2 = """Function:
+<<<action>>><<<signature>>>
+<<<dochelper>>><<<sourcehelper>>>
+Produce a Json object for the arguments to accomplish your goal using that function. The Json must look like this:
+```
+{
+  "args": [...],  # list of positional arguments
+  "kwargs": {"k": "v", ...}  # dict of keyword arguments
+}
+```
+Reply with the Json and no other text."""
 
 
 blacklisted_files = set([
@@ -58,6 +70,27 @@ def import_chosen_func(module_name, function_name):
     return f
 
 
+def execute_multiple_tries(goal, action, func):
+    messages = [{'role':'system', 'content':f'Goal: {goal}'}]
+    sig = str(inspect.signature(func))
+    src_content = inspect.getsource(func)
+    if len(src_content) > 1000:
+        src_content = ""
+    else:
+        src_content = f'Function source code:\n```{src_content}```'
+    doc_content = "" # TODO
+    p = action_prompt2.replace('<<<action>>>', action).replace('<<<signature>>>', sig).replace('<<<dochelper>>>', doc_content).replace('<<<sourcehelper>>>', src_content)
+    messages.append({'role':'user', 'content':p})
+    print(messages)
+    assistant = gpt.chat_complete(messages, temperature=temperature)
+    print(assistant)
+    data = json.loads(assistant)
+    
+    return execute(func, data['args'], data['kwargs'])
+    
+        
+
+
 def goalseek(goal):
     messages = [{'role':'system','content':system_prompt.format(goal=goal)}]
     done = False
@@ -65,7 +98,7 @@ def goalseek(goal):
         messages.append({'role':'user','content':available_actions_text()})
         print('------------')
         print(messages)
-        assistant = gpt.chat_complete(messages)
+        assistant = gpt.chat_complete(messages, temperature=temperature)
         print(assistant)
         messages.append({'role':'assistant','content':assistant})
         if assistant.lower().strip().startswith('action'):
@@ -74,13 +107,7 @@ def goalseek(goal):
             if len(action_parts) != 2:
                 raise RuntimeError(f'Failed to parse an action from: {assistant}')
             func = import_chosen_func(action_parts[0], action_parts[1])
-            sig = inspect.signature(func)
-            messages.append({'role':'user','content':action_prompt.replace('<<<action>>>', action).replace('<<<signature>>>', str(sig))})
-            print(messages)
-            assistant = gpt.chat_complete(messages)
-            print(assistant)
-            data = json.loads(assistant)
-            return execute(func, data['args'], data['kwargs'])
+            return execute_multiple_tries(goal, action, func)
         break # DEBUGGING
     return True
 
